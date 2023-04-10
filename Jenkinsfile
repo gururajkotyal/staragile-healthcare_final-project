@@ -5,7 +5,7 @@ maven 'MVN_HOME'
 }
 
 stages {
-stage("Git Checkout"){
+stage("Pull the Project from GitHub"){
 steps{
 git 'https://github.com/gururajkotyal/staragile-healthcare_final-project.git'
  }
@@ -22,15 +22,16 @@ steps{
     publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '/var/lib/jenkins/workspace/healthcare_project3/target/surefire-reports', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
  }
 }
-stage('Docker build image') {
+stage('Containerize the application') {
               steps {
+                echo 'Creating a docker image'
                   
                   sh'sudo docker system prune -af '
                   sh 'sudo docker build -t gururajdockerusername/healthcare:1.0 . '
               
                 }
             }
-stage('Docker login and push') {
+stage('Pushing the image to dockerhub') {
               steps {
                   withCredentials([string(credentialsId: 'dockerpasswd', variable: 'dockerpasswd')]) {
                   sh 'sudo docker login -u gururajdockerusername -p ${dockerpasswd} '
@@ -38,14 +39,14 @@ stage('Docker login and push') {
                   }
                 }
         }    
- stage (' setting up Kubernetes with terraform '){
+ stage ('deploy to kubernetes'){
             steps{
 
                 dir('terraform_files'){
                 sh 'terraform init'
                 sh 'terraform validate'
                 sh 'terraform apply --auto-approve'
-                sh 'sleep 20'
+                sh 'sleep 10'
                 }
                
             }
