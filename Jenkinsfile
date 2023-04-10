@@ -7,7 +7,7 @@ maven 'MVN_HOME'
 stages {
 stage("Git Checkout"){
 steps{
-git 'https://github.com/gururajkotyal/staragile-healthcare_project3.git'
+git 'https://github.com/gururajkotyal/staragile-healthcare_final-project.git'
  }
  }
 stage('Build the application'){
